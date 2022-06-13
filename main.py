@@ -106,7 +106,7 @@ if __name__ == "__main__":
     total_pages = pages(driver)
     
     # Start scraping
-    print("Starting scrapping..")
+    print("Starting to scrape..")
     data = []
     for j in range(0, int(total_pages)):
         print("============")
@@ -123,9 +123,11 @@ if __name__ == "__main__":
     df = pd.DataFrame(data)
     
     # Check for new titles
-    print("Checking for new titles")
+    print("Checking for new titles...")
     new_titles = []
     update = check_update(df, new_titles)
+    
+    print("Sending telegram notification...")
     if len(update) != 0:
         df_update = df[df["title"].isin(update)]
         msg = "TESING TESTING"
