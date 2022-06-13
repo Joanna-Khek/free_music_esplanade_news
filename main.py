@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from dotenv import load_dotenv
+from tqdm import tqdm
 
 load_dotenv()
 
@@ -28,8 +29,7 @@ def pages(driver):
         
 def item_scrapper(driver, data):
     items_elems = driver.find_elements(By.CLASS_NAME, "overlay")
-    for i in range(0, len(items_elems)):
-        print("Item: {}/{}".format(i+1, len(items_elems)))
+    for i in tqdm(range(0, len(items_elems))):
         items_elems[i].click()
         
         WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='event-header']")))
