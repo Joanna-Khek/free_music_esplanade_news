@@ -12,13 +12,14 @@ from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.chrome.service import Service
 from dotenv import load_dotenv
 from tqdm import tqdm
-
-load_dotenv()
+import telegram
 
 import time
 import csv
 import os
 import sys
+
+load_dotenv()
 
 def pages(driver):
     pages_text = driver.find_element(By.XPATH, "//div[@class='paging-container']").text
@@ -65,10 +66,24 @@ def item_scrapper(driver, data):
         driver.back()
     return data
         
+def check_update(df, new_titles):
+    old_title = list(pd.read_csv("output.csv").loc[:,"title"])
+    for title in list(df["title"]):
+        if title not in old_title:
+            new_titles.append(title)
+    return new_titles
+    
+def send_telegram_message(msg, CHAT_ID, API_KEY):
+    # start telegram bot
+    bot = telegram.Bot(token=API_KEY)
+    bot.send_message(chat_id=CHAT_ID, text=msg)
+    
 if __name__ == "__main__":
     
     url = "https://www.esplanade.com/whats-on/category"
-
+    API_KEY = os.getenv("API_KEY")
+    CHAT_ID = os.getenv("CHAT_ID")
+    
     # setting up options
     chrome_options = webdriver.ChromeOptions()
     chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
@@ -107,10 +122,21 @@ if __name__ == "__main__":
     print("Scraping complete!")
     df = pd.DataFrame(data)
     
+    # Check for new titles
+    print("Checking for new titles")
+    new_titles = []
+    update = check_update(df, new_titles)
+    if len(update) != 0:
+        df_update = df[df["title"].isin(update)]
+        msg = "TESING TESTING"
+        send_telegram_message(msg, CHAT_ID, API_KEY)
+    else:
+        msg = "NO NEW TITLES"
+        send_telegram_message(msg, CHAT_ID, API_KEY)
+        
     # Save to csv
     df.to_csv("output.csv")
     
-
     
     
 
