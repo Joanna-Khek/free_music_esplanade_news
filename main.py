@@ -89,12 +89,14 @@ if __name__ == "__main__":
     # Get total number of pages
     print("Getting total pages...")
     total_pages = pages(driver)
-
+    
     # Start scraping
     print("Starting scrapping..")
     data = []
     for j in range(0, int(total_pages)):
-        print("Page: {}/{}".format(j+1, total_pages))
+        print("============")
+        print("Pages: {}/{}".format(j+1, total_pages))
+        print("============")
         page_navigate = "&page={}".format(j)
         url = current_site + page_navigate
         driver.get(url)
