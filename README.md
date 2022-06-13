@@ -1,1 +1,1 @@
-"# band_esplanade_news" 
+# Band Esplanade News
