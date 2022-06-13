@@ -9,6 +9,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait as wait
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import time
 import csv
@@ -67,9 +70,12 @@ if __name__ == "__main__":
 
     # setting up options
     chrome_options = webdriver.ChromeOptions()
+    chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
     chrome_options.add_argument("--headless")
-
-    driver = webdriver.Chrome("chromedriver.exe", options=chrome_options)
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--no-sandbox')
+    #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
+    driver = webdriver.Chrome(executable_path=os.getenv("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
     driver.get(url)
     
     # Free events category
