@@ -129,10 +129,11 @@ if __name__ == "__main__":
     
     print("Sending telegram notification...")
     if len(update) != 0:
-        code_html='*NEW FREE PERFORMANCES IN ESPLANADE*'  
+        
         df_update = df[df["title"].isin(update)]
+        code_html='*{}*'.format(df_update["title"].iloc[k])  
         for k in range(len(df_update)):
-            msg = code_html + "\n\n Category: " + str((df_update["category"].iloc[k])) + "\n Title: " + str((df_update["title"].iloc[k])) + "\n Organiser: " + str((df_update["organiser"].iloc[k])) + "\n Date: " + str((df_update["date"].iloc[k])) + "\n Day: " + str((df_update["day"].iloc[k])) +  "\n Time: " + str((df_update["time"].iloc[k])) + "\n Address: " + str((df_update["address"].iloc[k])) + "\n Link: " + str((df_update["link"].iloc[k]))
+            msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Day:* " + str((df_update["day"].iloc[k])) +  "\n *Time:* " + str((df_update["time"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
             send_telegram_message(msg, CHAT_ID, API_KEY)
         
     # Save to csv
