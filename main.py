@@ -76,7 +76,7 @@ def check_update(df, new_titles):
 def send_telegram_message(msg, CHAT_ID, API_KEY):
     # start telegram bot
     bot = telegram.Bot(token=API_KEY)
-    bot.send_message(chat_id=CHAT_ID, text=msg)
+    bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
     
 if __name__ == "__main__":
     
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         df_update = df[df["title"].isin(update)]
         for k in range(len(df_update)):
             msg = code_html + "\n\n Category: " + str((df_update["category"].iloc[k])) + "\n Title: " + str((df_update["title"].iloc[k])) + "\n Organiser: " + str((df_update["organiser"].iloc[k])) + "\n Date: " + str((df_update["date"].iloc[k])) + "\n Day: " + str((df_update["day"].iloc[k])) +  "\n Time: " + str((df_update["time"].iloc[k])) + "\n Address: " + str((df_update["address"].iloc[k])) + "\n Link: " + str((df_update["link"].iloc[k]))
-            send_telegram_message(msg, CHAT_ID, API_KEY, parse_mode= 'Markdown')
+            send_telegram_message(msg, CHAT_ID, API_KEY)
         
     # Save to csv
     df.to_csv("output.csv")
