@@ -29,6 +29,7 @@ def pages(driver):
 def item_scrapper(driver, data):
     items_elems = driver.find_elements(By.CLASS_NAME, "overlay")
     for i in range(0, len(items_elems)):
+        print("Item: {}/{}".format(i+1, len(items_elems)))
         items_elems[i].click()
         
         WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='event-header']")))
@@ -75,7 +76,7 @@ if __name__ == "__main__":
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
-    driver = webdriver.Chrome(executable_path=os.getenv("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+    driver = webdriver.Chrome(executable_path=os.getenv("CHROMEDRIVER_PATH"), options=chrome_options)
     driver.get(url)
     
     # Free events category
@@ -85,9 +86,11 @@ if __name__ == "__main__":
     current_site = driver.current_url
     
     # Get total number of pages
+    print("Getting total pages...")
     total_pages = pages(driver)
 
     # Start scraping
+    print("Starting scrapping..")
     data = []
     for j in range(0, int(total_pages)):
         page_navigate = "&page={}".format(j)
@@ -97,6 +100,7 @@ if __name__ == "__main__":
     
         data = item_scrapper(driver, data)
     
+    print("Scrape complete!")
     df = pd.DataFrame(data)
     
     # Save to csv
