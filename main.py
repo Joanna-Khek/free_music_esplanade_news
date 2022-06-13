@@ -77,7 +77,7 @@ if __name__ == "__main__":
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("disable-dev-shm-usage")
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
-    driver = webdriver.Chrome(Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
+    driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
     driver.get(url)
     
     # Free events category
