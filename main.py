@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait as wait
+from selenium.webdriver.chrome.service import Service
 from dotenv import load_dotenv
 from tqdm import tqdm
 
@@ -46,7 +47,6 @@ def item_scrapper(driver, data):
         try:
             day_text = date_elem.split("\n")[1]
         except:
-            print("No Day")
             day_text = None
             
         time_text = driver.find_element(By.XPATH, "//div[@class='event-date-partial']/div[@itemprop='doorTime']").text
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("disable-dev-shm-usage")
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
-    driver = webdriver.Chrome(executable_path=os.getenv("CHROMEDRIVER_PATH"), options=chrome_options)
+    driver = webdriver.Chrome(Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
     driver.get(url)
     
     # Free events category
@@ -94,6 +94,7 @@ if __name__ == "__main__":
     print("Starting scrapping..")
     data = []
     for j in range(0, int(total_pages)):
+        print("Page: {}/{}".format(j+1, total_pages))
         page_navigate = "&page={}".format(j)
         url = current_site + page_navigate
         driver.get(url)
@@ -101,7 +102,7 @@ if __name__ == "__main__":
     
         data = item_scrapper(driver, data)
     
-    print("Scrape complete!")
+    print("Scraping complete!")
     df = pd.DataFrame(data)
     
     # Save to csv
