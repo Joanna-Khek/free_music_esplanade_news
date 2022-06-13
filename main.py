@@ -69,7 +69,7 @@ if __name__ == "__main__":
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
 
-    driver = webdriver.Chrome("./chromedriver/chromedriver.exe", options=chrome_options)
+    driver = webdriver.Chrome("chromedriver.exe", options=chrome_options)
     driver.get(url)
     
     # Free events category
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     df = pd.DataFrame(data)
     
     # Save to csv
-    df.to_csv("./output/output.csv")
+    df.to_csv("output.csv")
     
 
     
