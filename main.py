@@ -68,9 +68,11 @@ def item_scrapper(driver, data):
         
 def check_update(df, new_titles):
     old_title = list(pd.read_csv("output.csv").loc[:,"title"])
+    print("Number of old titles: {}".format(len(old_title)))
     for title in list(df["title"]):
         if title not in old_title:
             new_titles.append(title)
+    print("Number of new new titles: {}".format(len(new_titles)))
     return new_titles
     
 def send_telegram_message(msg, CHAT_ID, API_KEY):
@@ -133,13 +135,19 @@ if __name__ == "__main__":
         df_update = df[df["title"].isin(update)]
         # Get only MUSIC category
         df_update = df_update[df_update["category"] == "MUSIC"]
+        print("Number of new music titles: {}".format(len(df_update)))
         for k in range(len(df_update)):
             code_html='*{}*'.format(df_update["title"].iloc[k])  
             msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Day:* " + str((df_update["day"].iloc[k])) +  "\n *Time:* " + str((df_update["time"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
             send_telegram_message(msg, CHAT_ID, API_KEY)
+    else:
+        msg = "No new updates"
+        send_telegram_message(msg, CHAT_ID, API_KEY)
         
     # Save to csv
+    print("Saving database...")
     df.to_csv("output.csv")
+    
     
     
     
