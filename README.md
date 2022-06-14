@@ -4,7 +4,7 @@ My partner and I are both musicians and we love attending music performances tog
 
 ## Project Description
 ### 1. Web Scraping
-- I built a web scrapping script that scrapes all "free" performances at the esplanade and saved it in a database. The script is written in Python and uses Selenium.
+- I built a web scraping script that scrapes all "free" performances at the esplanade and saved it in a database. The script is written in Python and uses Selenium.
 ![esplanade](https://user-images.githubusercontent.com/53141849/173495043-57b38640-59f7-4413-83bd-c02b8bfa0dea.png)
 
 ### 2. Telegram Bot
