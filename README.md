@@ -13,4 +13,5 @@ My partner and I are both musicians and we love attending music performances tog
 
 ### 3. Deployment
 - I hosted the bot on heroku and scheduled it to run twice daily at 9am and 6pm SGT.
+- Feel free to join the group! https://t.me/+F9x8L7z_Msw3MDQ1
 
