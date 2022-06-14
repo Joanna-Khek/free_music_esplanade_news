@@ -1,4 +1,6 @@
 # Free Music @ Esplanade News
+![free mUSIC](https://user-images.githubusercontent.com/53141849/173496469-5b5c920e-5ce0-4e1f-b38e-edcfa2b1f25f.png)
+
 ## Inspiration
 My partner and I are both musicians and we love attending music performances together. The Esplanade Singapore frequently organises free music performances and we thought it will be great if we can get notifications of any new upcoming performances as soon as possible since some performances require registration and tickets might get snapped up fast!
 
