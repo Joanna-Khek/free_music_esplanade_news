@@ -1,6 +1,6 @@
 # Free Music Esplanade News
 ## Inspiration
-My partner and I are both musicians and we love attending music performances together. The Esplanade Singapore frequently organises free music performances and we thought it will be great if we can get notifications of any new upcoming performances. 
+My partner and I are both musicians and we love attending music performances together. The Esplanade Singapore frequently organises free music performances and we thought it will be great if we can get notifications of any new upcoming performances as soon as possible since some performances require registration and tickets might get snapped up fast!
 
 ## Project Description
 ### 1. Web Scraping
