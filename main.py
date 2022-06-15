@@ -160,10 +160,6 @@ if __name__ == "__main__":
         # Save to csv
         print("Saving database...")
         df_update.to_sql('data', con=engine, if_exists="append", index=False)
-    else:
-        msg = "No new updates"
-        print(msg)
-        send_telegram_message(msg, CHAT_ID, API_KEY)
         
  
     
