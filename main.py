@@ -1,5 +1,10 @@
 import pandas as pd
+import time
+import csv
+import os
+import sys
 
+# Selenium Web Scraping
 from selenium import webdriver
 from selenium.webdriver.chrome import options
 from selenium.webdriver.common.keys import Keys
@@ -14,10 +19,9 @@ from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
 
-import time
-import csv
-import os
-import sys
+# SQL Database
+import psycopg2
+from sqlalchemy import create_engine 
 
 load_dotenv()
 
@@ -66,11 +70,14 @@ def item_scrapper(driver, data):
         driver.back()
     return data
         
-def check_update(df, new_titles):
-    old_title = list(pd.read_csv("output.csv").loc[:,"title"])
+def check_update(df, new_titles, con):
+    query = f"""SELECT * FROM data"""
+    old_title = list(pd.read_sql(query, con).loc[:,"title"])
+    print("Number of old titles: {}".format(len(old_title)))
     for title in list(df["title"]):
         if title not in old_title:
             new_titles.append(title)
+    print("Number of new new titles: {}".format(len(new_titles)))
     return new_titles
     
 def send_telegram_message(msg, CHAT_ID, API_KEY):
@@ -83,7 +90,16 @@ if __name__ == "__main__":
     url = "https://www.esplanade.com/whats-on/category"
     API_KEY = os.getenv("API_KEY")
     CHAT_ID = os.getenv("CHAT_ID")
+    DATABASE_URL = os.getenv("DATABASE_URL")
     
+    # set up database
+    if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        
+    engine = create_engine(DATABASE_URL, echo = False)
+    con = psycopg2.connect(DATABASE_URL)
+    cur = con.cursor()
+
     # setting up options
     chrome_options = webdriver.ChromeOptions()
     chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
@@ -93,6 +109,7 @@ if __name__ == "__main__":
     chrome_options.add_argument("disable-dev-shm-usage")
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
     driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
+    
     driver.get(url)
     
     # Free events category
@@ -125,21 +142,31 @@ if __name__ == "__main__":
     # Check for new titles
     print("Checking for new titles...")
     new_titles = []
-    update = check_update(df, new_titles)
+    update = check_update(df, new_titles, con)
     
     print("Sending telegram notification...")
     if len(update) != 0:
         
+        # Get those new titles information
         df_update = df[df["title"].isin(update)]
         # Get only MUSIC category
         df_update = df_update[df_update["category"] == "MUSIC"]
+        print("Number of new music titles: {}".format(len(df_update)))
         for k in range(len(df_update)):
             code_html='*{}*'.format(df_update["title"].iloc[k])  
             msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Day:* " + str((df_update["day"].iloc[k])) +  "\n *Time:* " + str((df_update["time"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
             send_telegram_message(msg, CHAT_ID, API_KEY)
+            
+        # Save to csv
+        print("Saving database...")
+        df_update.to_sql('data', con=engine, if_exists="append", index=False)
+    else:
+        msg = "No new updates"
+        print(msg)
+        send_telegram_message(msg, CHAT_ID, API_KEY)
         
-    # Save to csv
-    df.to_csv("output.csv")
+ 
+    
     
     
     
