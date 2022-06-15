@@ -1,5 +1,10 @@
 import pandas as pd
+import time
+import csv
+import os
+import sys
 
+# Selenium Web Scraping
 from selenium import webdriver
 from selenium.webdriver.chrome import options
 from selenium.webdriver.common.keys import Keys
@@ -14,10 +19,9 @@ from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
 
-import time
-import csv
-import os
-import sys
+# SQL Database
+import psycopg2
+from sqlalchemy import create_engine 
 
 load_dotenv()
 
@@ -66,8 +70,9 @@ def item_scrapper(driver, data):
         driver.back()
     return data
         
-def check_update(df, new_titles):
-    old_title = list(pd.read_csv("output.csv").loc[:,"title"])
+def check_update(df, new_titles, con):
+    query = f"""SELECT * FROM data"""
+    old_title = list(pd.read_sql(query, con).loc[:,"title"])
     print("Number of old titles: {}".format(len(old_title)))
     for title in list(df["title"]):
         if title not in old_title:
@@ -85,7 +90,16 @@ if __name__ == "__main__":
     url = "https://www.esplanade.com/whats-on/category"
     API_KEY = os.getenv("API_KEY")
     CHAT_ID = os.getenv("CHAT_ID")
+    DATABASE_URL = os.getenv("DATABASE_URL")
     
+    # set up database
+    if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        
+    engine = create_engine(DATABASE_URL, echo = False)
+    con = psycopg2.connect(DATABASE_URL)
+    cur = con.cursor()
+
     # setting up options
     chrome_options = webdriver.ChromeOptions()
     chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
@@ -95,6 +109,7 @@ if __name__ == "__main__":
     chrome_options.add_argument("disable-dev-shm-usage")
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
     driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
+    
     driver.get(url)
     
     # Free events category
@@ -127,11 +142,12 @@ if __name__ == "__main__":
     # Check for new titles
     print("Checking for new titles...")
     new_titles = []
-    update = check_update(df, new_titles)
+    update = check_update(df, new_titles, con)
     
     print("Sending telegram notification...")
     if len(update) != 0:
         
+        # Get those new titles information
         df_update = df[df["title"].isin(update)]
         # Get only MUSIC category
         df_update = df_update[df_update["category"] == "MUSIC"]
@@ -146,7 +162,7 @@ if __name__ == "__main__":
         
     # Save to csv
     print("Saving database...")
-    df.to_csv("output.csv")
+    df_update.to_sql('data', con=engine, if_exists="append")
     
     
     
