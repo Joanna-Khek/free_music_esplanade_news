@@ -161,6 +161,9 @@ if __name__ == "__main__":
         print("Saving database...")
         df_update.to_sql('data', con=engine, if_exists="append", index=False)
         
+    else:
+        msg = "No new updates"
+        print(msg)
  
     
     
