@@ -26,37 +26,37 @@ from sqlalchemy import create_engine
 load_dotenv()
 
 def pages(driver):
-    pages_text = driver.find_element(By.XPATH, "//div[@class='paging-container']").text
-    if (pages_text.split("\n")[-2].isnumeric()):
-        total_pages = pages_text.split("\n")[-2]
-    else:
-        total_pages = pages_text.split("\n")[-1]
-    return total_pages
+    load_more = driver.find_elements(By.XPATH, "//div[@x-show='showLoadMore']")[0].text
+    while load_more == "Load more":
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(3)
+        driver.find_elements(By.XPATH, "//div[@x-show='showLoadMore']")[0].click()
+        time.sleep(3)
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        load_more = driver.find_elements(By.XPATH, "//div[@x-show='showLoadMore']")[0].text
         
 def item_scrapper(driver, data):
-    items_elems = driver.find_elements(By.CLASS_NAME, "overlay")
-    for i in tqdm(range(0, len(items_elems))):
-        items_elems[i].click()
+    time.sleep(1)
+    # Store all the links
+    item_links = []
+    items_elems = driver.find_elements(By.XPATH, "//div[@class='card-root h-full w-full']/a")
+    for i in range(0, len(items_elems)):
+        item_links.append(items_elems[i].get_attribute('href'))
         
-        WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='event-header']")))
-        category_elem = driver.find_element(By.XPATH, "//div[@class='event-header']").text
-        category_text = category_elem.split("\n")[1]
-
-        title_text = driver.find_element(By.TAG_NAME, "h1").text
-
-        organiser_text = driver.find_element(By.CLASS_NAME, "event-organizer").text
-
-        date_elem = driver.find_element(By.XPATH, "//div[@class='event-date-partial']/div[@itemprop='startDate']").text
-        date_text = date_elem.split("\n")[0]
-        
-        try:
-            day_text = date_elem.split("\n")[1]
-        except:
-            day_text = None
-            
-        time_text = driver.find_element(By.XPATH, "//div[@class='event-date-partial']/div[@itemprop='doorTime']").text
-        address_text = driver.find_element(By.CLASS_NAME, "address").text
+    for i in tqdm(range(0, len(item_links))):
+        link_url = item_links[i]
+        driver.get(link_url)
+        time.sleep(2)
+        #WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='mb-8']")))
+        category_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='body-2  !font-semibold']")[0].text
+        title_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='mb-8']/h1")[0].text
+        organiser_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='mb-8']/div[@class='body-2 rte']")[1].text
+        date_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='flex justify-start body-2 mb-8']")[0].text
+        address_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='flex justify-start body-2 mb-8']")[2].text
         link_text = driver.current_url
+        
+        day_text = ''
+        time_text = ''
         
         data.append({'category': category_text,
                     'title': title_text,
@@ -66,8 +66,6 @@ def item_scrapper(driver, data):
                     'day': day_text,
                     'time': time_text,
                     'address': address_text})
-        
-        driver.back()
     return data
         
 def check_update(df, new_titles, con):
@@ -87,7 +85,7 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
     
 if __name__ == "__main__":
     
-    url = "https://www.esplanade.com/whats-on/category"
+    url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.getenv("API_KEY")
     CHAT_ID = os.getenv("CHAT_ID")
     DATABASE_URL = os.getenv("DATABASE_URL")
@@ -111,30 +109,20 @@ if __name__ == "__main__":
     driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
     
     driver.get(url)
-    
-    # Free events category
-    driver.find_element(By.LINK_TEXT, 'Free').click()
-    time.sleep(2)
+    WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
     
     current_site = driver.current_url
     
-    # Get total number of pages
+    # Load more
     print("Getting total pages...")
-    total_pages = pages(driver)
+    pages(driver)
+    time.sleep(2)
     
     # Start scraping
     print("Starting to scrape..")
     data = []
-    for j in range(0, int(total_pages)):
-        print("============")
-        print("Pages: {}/{}".format(j+1, total_pages))
-        print("============")
-        page_navigate = "&page={}".format(j)
-        url = current_site + page_navigate
-        driver.get(url)
-        time.sleep(2)
     
-        data = item_scrapper(driver, data)
+    data = item_scrapper(driver, data)
     
     print("Scraping complete!")
     df = pd.DataFrame(data)
@@ -150,11 +138,11 @@ if __name__ == "__main__":
         # Get those new titles information
         df_update = df[df["title"].isin(update)]
         # Get only MUSIC category
-        df_update = df_update[df_update["category"] == "MUSIC"]
+        df_update = df_update[df_update["category"] == "Music"]
         print("Number of new music titles: {}".format(len(df_update)))
         for k in range(len(df_update)):
             code_html='*{}*'.format(df_update["title"].iloc[k])  
-            msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Day:* " + str((df_update["day"].iloc[k])) +  "\n *Time:* " + str((df_update["time"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
+            msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
             send_telegram_message(msg, CHAT_ID, API_KEY)
             
         # Save to csv
