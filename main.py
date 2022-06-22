@@ -33,7 +33,7 @@ def pages(driver):
         driver.execute_script("arguments[0].scrollIntoView();", element)
         time.sleep(2)
         driver.find_elements(By.XPATH, "//div[@x-show='showLoadMore']")[0].click()
-        time.sleep(5)
+        time.sleep(3)
         element = driver.find_elements(By.XPATH, "//div[@class='card-root h-full w-full']/a")[-1]
         driver.execute_script("arguments[0].scrollIntoView();", element)
         time.sleep(2)
@@ -105,13 +105,14 @@ if __name__ == "__main__":
 
     # setting up options
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
+    #chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
     chrome_options.add_argument("--headless")
     chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("disable-dev-shm-usage")
-    #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
-    driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
+    driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
+    #driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
     
     driver.get(url)
     WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
