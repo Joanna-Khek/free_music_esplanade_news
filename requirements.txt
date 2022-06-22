@@ -5,3 +5,4 @@ tqdm==4.63.0
 python-telegram-bot
 psycopg2-binary
 SQLAlchemy==1.4.37
+fake-useragent
