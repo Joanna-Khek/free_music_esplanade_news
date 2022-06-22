@@ -18,7 +18,6 @@ from selenium.webdriver.chrome.service import Service
 from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
-from fake_useragent import UserAgent
 
 # SQL Database
 import psycopg2
@@ -28,13 +27,18 @@ load_dotenv()
 
 def pages(driver):
     load_more = driver.find_elements(By.XPATH, "//div[@x-show='showLoadMore']")[0].text
+    print("Loading all items...")
     while load_more == "Load more":
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(3)
+        element = driver.find_elements(By.XPATH, "//div[@class='card-root h-full w-full']/a")[-1]
+        driver.execute_script("arguments[0].scrollIntoView();", element)
+        time.sleep(2)
         driver.find_elements(By.XPATH, "//div[@x-show='showLoadMore']")[0].click()
-        time.sleep(3)
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(5)
+        element = driver.find_elements(By.XPATH, "//div[@class='card-root h-full w-full']/a")[-1]
+        driver.execute_script("arguments[0].scrollIntoView();", element)
+        time.sleep(2)
         load_more = driver.find_elements(By.XPATH, "//div[@x-show='showLoadMore']")[0].text
+
         
 def item_scrapper(driver, data):
     time.sleep(1)
@@ -100,16 +104,14 @@ if __name__ == "__main__":
     cur = con.cursor()
 
     # setting up options
-    user_agent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/22.0.1216.0 Safari/537.2'
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument(f'user-agent={user_agent}')
+    #chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
+    #chrome_options.add_argument("--headless")
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("disable-dev-shm-usage")
-    #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
-    driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
+    driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
+    #driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
     
     driver.get(url)
     WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
