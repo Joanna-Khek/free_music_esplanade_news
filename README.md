@@ -7,9 +7,12 @@ My partner and I are both musicians and we love attending music performances tog
 ## Project Description
 ### 1. Web Scraping
 - I built a web scraping script that scrapes all "free" performances at the esplanade and saved it in a database. The script is written in Python and uses Selenium.
-![esplanade](https://user-images.githubusercontent.com/53141849/173495043-57b38640-59f7-4413-83bd-c02b8bfa0dea.png)
+Note: script had been updated to reflected the new esplanade website
+
+![new_esplanade](https://user-images.githubusercontent.com/53141849/178405333-513130db-6c8c-459d-9004-58380c9e7583.png)
 
 ### 2. Telegram Bot
+
 - I then built a telegram bot that takes in the newly scraped data and compares with the past data stored in the database. The bot will return only those newly added performances under the "MUSIC" category.
 ![screenshot](https://user-images.githubusercontent.com/53141849/173495469-371306a9-5e49-4e02-bd89-0b483b2b404c.png)
 
