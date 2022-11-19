@@ -13,7 +13,7 @@ Note: script had been updated to reflect the new esplanade website
 
 ### 2. Telegram Bot
 
-- I buily a telegram bot that takes in the newly scraped data and compares with the past data stored in the database. The bot will return only those newly added performances under the "MUSIC" category.
+- I built a telegram bot that takes in the newly scraped data and compares with the past data stored in the database. The bot will return only those newly added performances under the "MUSIC" category.
 ![screenshot](https://user-images.githubusercontent.com/53141849/173495469-371306a9-5e49-4e02-bd89-0b483b2b404c.png)
 
 ### 3. Deployment
