@@ -1,1 +1,2 @@
-bot: python3 main.py
+# Modify this Procfile to fit your needs
+bot: python main.py
