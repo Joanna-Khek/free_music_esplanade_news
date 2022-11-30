@@ -19,6 +19,8 @@ from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
 
+import chromedriver_binary
+
 # SQL Database
 import psycopg2
 from sqlalchemy import create_engine 
@@ -93,11 +95,12 @@ if __name__ == "__main__":
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.getenv("API_KEY")
     CHAT_ID = os.getenv("CHAT_ID")
-    DATABASE_URL = os.getenv("DATABASE_URL")
-    
-    #set up database
-    if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
-       DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    #DATABASE_URL = os.getenv("DATABASE_URL")
+    DATABASE_URL = "postgresql://postgres:ZCrpT0IDtZUsSHrejZk3@containers-us-west-19.railway.app:6464/railway"
+
+    # #set up database
+    # if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    #    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     
 
     engine = create_engine(DATABASE_URL, echo = False)
@@ -106,26 +109,27 @@ if __name__ == "__main__":
 
     # setting up options
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
+    #chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
     chrome_options.add_argument("--headless")
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("disable-dev-shm-usage")
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
-    driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
-    
+    #driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
+    driver =  webdriver.Chrome(chrome_options=chrome_options)
+
     driver.get(url)
     WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
     
     current_site = driver.current_url
     
-    # Load more
+    #Load more
     print("Getting total pages...")
     pages(driver)
     time.sleep(2)
     
-    # Start scraping
+    #Start scraping
     print("Starting to scrape..")
     data = []
     
@@ -139,28 +143,28 @@ if __name__ == "__main__":
     new_titles = []
     update = check_update(df, new_titles, con)
     
-    print("Sending telegram notification...")
-    if len(update) != 0:
+    # print("Sending telegram notification...")
+    # if len(update) != 0:
         
-        # Get those new titles information
-        df_update = df[df["title"].isin(update)]
-        # Get only MUSIC category
-        df_update = df_update[df_update["category"] == "Music"]
-        print("Number of new music titles: {}".format(len(df_update)))
-        # for k in range(len(df_update)):
-        #     code_html='*{}*'.format(df_update["title"].iloc[k])  
-        #     msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
-        #     time.sleep(2)
-        #     send_telegram_message(msg, CHAT_ID, API_KEY)
+    #     # Get those new titles information
+    #     df_update = df[df["title"].isin(update)]
+    #     # Get only MUSIC category
+    #     df_update = df_update[df_update["category"] == "Music"]
+    #     print("Number of new music titles: {}".format(len(df_update)))
+    #     # for k in range(len(df_update)):
+    #     #     code_html='*{}*'.format(df_update["title"].iloc[k])  
+    #     #     msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
+    #     #     time.sleep(2)
+    #     #     send_telegram_message(msg, CHAT_ID, API_KEY)
 
             
-        # Save to csv
-        print("Saving database...")
-        df_update.to_sql('data', con=engine, if_exists="append", index=False)
+    #     # Save to csv
+    #     print("Saving database...")
+    #     df_update.to_sql('data', con=engine, if_exists="append", index=False)
         
-    else:
-        msg = "No new updates"
-        print(msg)
+    # else:
+    #     msg = "No new updates"
+    #     print(msg)
  
     
     

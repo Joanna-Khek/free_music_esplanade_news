@@ -1,2 +1,2 @@
 # Modify this Procfile to fit your needs
-bot: python main.py
+web: python3 main.py
