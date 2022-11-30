@@ -17,10 +17,9 @@ from selenium.webdriver.chrome.service import Service
 from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
-# import chromedriver_autoinstaller as chromedriver
-# chromedriver.install()
 
-import chromedriver_binary
+
+#import chromedriver_binary
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -106,7 +105,6 @@ if __name__ == "__main__":
     # if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     #    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     
-
     engine = create_engine(DATABASE_URL, echo = False)
     con = psycopg2.connect(DATABASE_URL)
     cur = con.cursor()
@@ -156,14 +154,21 @@ if __name__ == "__main__":
         # Get only MUSIC category
         df_update = df_update[df_update["category"] == "Music"]
         print("Number of new music titles: {}".format(len(df_update)))
-        for k in range(len(df_update)):
-            code_html='*{}*'.format(df_update["title"].iloc[k])  
-            msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
-            time.sleep(2)
-            send_telegram_message(msg, CHAT_ID, API_KEY)
-            print("Sent successfully!")
+        
+        # no new music titles
+        if len(df_update) == 0:
+            print("No new updates")
+
+        # found new music titles
+        else:
+            for k in range(len(df_update)):
+                code_html='*{}*'.format(df_update["title"].iloc[k])  
+                msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
+                time.sleep(2)
+                send_telegram_message(msg, CHAT_ID, API_KEY)
+                print("Sent successfully!")
             
-        # Save to csv
+        # update to database
         print("Saving database...")
         df_update.to_sql('data', con=engine, if_exists="append", index=False)
         
