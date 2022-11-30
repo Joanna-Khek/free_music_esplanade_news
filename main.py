@@ -117,7 +117,7 @@ if __name__ == "__main__":
     chrome_options.add_argument("disable-dev-shm-usage")
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
     #driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
-    driver =  webdriver.Chrome(chrome_options=chrome_options)
+    driver =  webdriver.Chrome(options=chrome_options)
 
     driver.get(url)
     WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
