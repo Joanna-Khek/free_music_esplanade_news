@@ -7,3 +7,4 @@ psycopg2-binary
 SQLAlchemy==1.4.37
 phantomjs
 chromedriver-binary
+webdriver-manager
