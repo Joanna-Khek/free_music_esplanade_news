@@ -25,6 +25,11 @@ import chromedriver_binary
 import psycopg2
 from sqlalchemy import create_engine 
 
+!apt-get update
+!apt install chromium-chromedriver
+!cp /usr/lib/chromium-browser/chromedriver /usr/bin
+!pip install selenium
+
 load_dotenv()
 
 def pages(driver):
@@ -117,7 +122,7 @@ if __name__ == "__main__":
     chrome_options.add_argument("disable-dev-shm-usage")
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
     #driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
-    driver =  webdriver.Chrome(options=chrome_options)
+    driver =  webdriver.Chrome('chromedriver', options=chrome_options)
 
     driver.get(url)
     WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
