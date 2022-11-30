@@ -13,22 +13,21 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.chrome.service import Service
 from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
+# import chromedriver_autoinstaller as chromedriver
+# chromedriver.install()
 
 import chromedriver_binary
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 # SQL Database
 import psycopg2
 from sqlalchemy import create_engine 
 
-!apt-get update
-!apt install chromium-chromedriver
-!cp /usr/lib/chromium-browser/chromedriver /usr/bin
-!pip install selenium
 
 load_dotenv()
 
@@ -120,9 +119,10 @@ if __name__ == "__main__":
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("disable-dev-shm-usage")
+    service = ChromeService(executable_path=ChromeDriverManager().install())
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
     #driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
-    driver =  webdriver.Chrome('chromedriver', options=chrome_options)
+    driver =  webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get(url)
     WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
@@ -148,28 +148,28 @@ if __name__ == "__main__":
     new_titles = []
     update = check_update(df, new_titles, con)
     
-    # print("Sending telegram notification...")
-    # if len(update) != 0:
+    print("Sending telegram notification...")
+    if len(update) != 0:
         
-    #     # Get those new titles information
-    #     df_update = df[df["title"].isin(update)]
-    #     # Get only MUSIC category
-    #     df_update = df_update[df_update["category"] == "Music"]
-    #     print("Number of new music titles: {}".format(len(df_update)))
-    #     # for k in range(len(df_update)):
-    #     #     code_html='*{}*'.format(df_update["title"].iloc[k])  
-    #     #     msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
-    #     #     time.sleep(2)
-    #     #     send_telegram_message(msg, CHAT_ID, API_KEY)
+        # Get those new titles information
+        df_update = df[df["title"].isin(update)]
+        # Get only MUSIC category
+        df_update = df_update[df_update["category"] == "Music"]
+        print("Number of new music titles: {}".format(len(df_update)))
+        # for k in range(len(df_update)):
+        #     code_html='*{}*'.format(df_update["title"].iloc[k])  
+        #     msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
+        #     time.sleep(2)
+        #     send_telegram_message(msg, CHAT_ID, API_KEY)
 
             
-    #     # Save to csv
-    #     print("Saving database...")
-    #     df_update.to_sql('data', con=engine, if_exists="append", index=False)
+        # Save to csv
+        print("Saving database...")
+        df_update.to_sql('data', con=engine, if_exists="append", index=False)
         
-    # else:
-    #     msg = "No new updates"
-    #     print(msg)
+    else:
+        msg = "No new updates"
+        print(msg)
  
     
     
