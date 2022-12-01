@@ -98,12 +98,11 @@ if __name__ == "__main__":
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.getenv("API_KEY")
     CHAT_ID = os.getenv("CHAT_ID")
-    #DATABASE_URL = os.getenv("DATABASE_URL")
-    DATABASE_URL = "postgresql://postgres:ZCrpT0IDtZUsSHrejZk3@containers-us-west-19.railway.app:6464/railway"
+    DATABASE_URL = os.getenv("DATABASE_URL")
 
-    # #set up database
-    # if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
-    #    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    # set up database
+    if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     
     engine = create_engine(DATABASE_URL, echo = False)
     con = psycopg2.connect(DATABASE_URL)
@@ -165,7 +164,7 @@ if __name__ == "__main__":
                 code_html='*{}*'.format(df_update["title"].iloc[k])  
                 msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
                 time.sleep(2)
-                send_telegram_message(msg, CHAT_ID, API_KEY)
+                #send_telegram_message(msg, CHAT_ID, API_KEY)
                 print("Sent successfully!")
             
         # update to database
