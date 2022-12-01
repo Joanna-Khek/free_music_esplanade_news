@@ -4,6 +4,3 @@
 output.csv
 *.log
 .DS_Store
-node_modules
-dist
-cron-service
