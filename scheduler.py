@@ -4,7 +4,7 @@ import subprocess
 
 
 def job():
-    subprocess.call("python test.py", shell=True)
+    subprocess.call("python main.py", shell=True)
 
 
 if __name__ == "__main__":
