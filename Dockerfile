@@ -13,4 +13,4 @@ RUN apt-get update && apt-get install -y google-chrome-stable
 COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 COPY . /app
-CMD python main.py
+CMD python scheduler.py
