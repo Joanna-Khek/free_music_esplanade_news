@@ -115,7 +115,7 @@ if __name__ == "__main__":
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument("disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-dev-shm-usage")
     service = ChromeService(executable_path=ChromeDriverManager().install())
     #driver = webdriver.Chrome("chromedriver.exe", chrome_options=chrome_options)
     #driver = webdriver.Chrome(service=Service(os.getenv("CHROMEDRIVER_PATH")), options=chrome_options)
