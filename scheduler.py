@@ -9,7 +9,7 @@ def job():
 
 if __name__ == "__main__":
     print("Scheduler...")
-    schedule.every().hour.at().do(job)
+    schedule.every().hour.do(job)
 
     while 1:
         schedule.run_pending()
