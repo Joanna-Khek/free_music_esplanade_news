@@ -110,7 +110,6 @@ if __name__ == "__main__":
 
     # setting up options
     chrome_options = webdriver.ChromeOptions()
-    #chrome_options.binary_location = os.getenv("GOOGLE_CHROME_BIN")
     chrome_options.add_argument("--headless")
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--window-size=1920,1080")
