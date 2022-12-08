@@ -139,6 +139,9 @@ if __name__ == "__main__":
     print("Scraping complete!")
     df = pd.DataFrame(data)
     
+    print("Closing chromedriver...")
+    driver.close()
+
     # Check for new titles
     print("Checking for new titles...")
     new_titles = []
