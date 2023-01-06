@@ -14,5 +14,5 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
     bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
     
 if __name__ == "__main__":
-    msg = "Apologies for the spam. Database has been updated."
+    msg = "Testing testing.."
     send_telegram_message(msg, CHAT_ID, API_KEY)
