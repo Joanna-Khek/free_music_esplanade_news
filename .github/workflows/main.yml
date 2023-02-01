@@ -1,0 +1,12 @@
+name: run main.py
+ 
+on:
+  schedule:
+    - cron: "0 */1 * * *" # Every hour
+ 
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: exeucte py script
+        run: python main.py
