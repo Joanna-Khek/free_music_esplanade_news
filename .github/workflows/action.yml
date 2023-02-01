@@ -2,7 +2,7 @@ name: Esplanade News Scrapper
  
 on:
   schedule:
-    - cron: "*/1 * * * *" # Every 5 mins
+    - cron: "0 */1 * * *" # Every hour
   push:
     branches:
       - main
