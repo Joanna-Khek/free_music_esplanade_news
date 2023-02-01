@@ -10,6 +10,6 @@ on:
 
 jobs:
   print_hello:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - run: echo "Hello World!"
