@@ -2,7 +2,7 @@ name: Esplanade News Scrapper
  
 on:
   schedule:
-    - cron: "0 */1 * * *" # Every hour
+    - cron: "* * * * *" 
   push:
     branches:
       - main
@@ -28,12 +28,12 @@ jobs:
         run: python main.py
       
       - name: Commit and push
-        if: github.event_name == 'push'
-        run: |
-          git config --global user.name github-actions[bot]
-          git config --global user.email github-actions[bot]@users.noreply.github.com
-          git pull
-          git commit --allow-empty -m "Automated database dump"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Automated Change
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@users.noreply.github.com
+          commit_author: Joanna Khek <actions@github.com> 
+  
 
     
