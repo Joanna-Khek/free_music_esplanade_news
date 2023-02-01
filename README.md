@@ -18,7 +18,7 @@ My partner and I are both musicians and we love attending music performances tog
 ![screenshot](https://user-images.githubusercontent.com/53141849/173495469-371306a9-5e49-4e02-bd89-0b483b2b404c.png)
 
 ### 3. Deployment
-- I hosted the bot on heroku and scheduled it to run twice daily at 9am and 6pm SGT. [UPDATE] Since the free tier plan of heroku has been disabled permanently, I have since migrated the app to railway. The application was dockerized and deployed on railwayapp. The scheduler.py file help runs the main.py script hourly.
+- I scheduled a cron job using github actions to run the script every hour.
 
 - Feel free to join the group! https://t.me/+F9x8L7z_Msw3MDQ1
 
