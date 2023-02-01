@@ -1,0 +1,15 @@
+# This is a basic workflow to help you get started with Actions
+ 
+name:
+  First Cron Job
+ 
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  print_hello:
+    runs_on: ubuntu-latest
+    steps:
+      - run: echo "Hello World!"
