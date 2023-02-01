@@ -24,8 +24,8 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
 # SQL Database
-import psycopg2
-from sqlalchemy import create_engine 
+# import psycopg2
+# from sqlalchemy import create_engine 
 
 
 load_dotenv()
