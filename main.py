@@ -78,9 +78,8 @@ def item_scrapper(driver, data):
                     'address': address_text})
     return data
         
-def check_update(df, new_titles, con):
-    query = f"""SELECT * FROM data"""
-    old_title = list(pd.read_sql(query, con).loc[:,"title"])
+def check_update(old_df, new_titles, df):
+    old_title = list(old_df.title)
     print("Number of old titles: {}".format(len(old_title)))
     for title in list(df["title"]):
         if title not in old_title:
@@ -98,15 +97,6 @@ if __name__ == "__main__":
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.getenv("API_KEY")
     CHAT_ID = os.getenv("CHAT_ID")
-    DATABASE_URL = os.getenv("DATABASE_URL")
-
-    # set up database
-    if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-    
-    engine = create_engine(DATABASE_URL, echo = False)
-    con = psycopg2.connect(DATABASE_URL)
-    cur = con.cursor()
 
     # setting up options
     chrome_options = webdriver.ChromeOptions()
@@ -144,8 +134,9 @@ if __name__ == "__main__":
 
     # Check for new titles
     print("Checking for new titles...")
+    old_df = pd.read_csv("data.csv")
     new_titles = []
-    update = check_update(df, new_titles, con)
+    update = check_update(old_df, new_titles, df)
     
     print("Sending telegram notification...")
     if len(update) != 0:
@@ -171,8 +162,8 @@ if __name__ == "__main__":
             
         # update to database
         print("Saving database...")
-        df_update.to_sql('data', con=engine, if_exists="append", index=False)
-        
+        df_new = old_df.append(df_update)
+        df_new.to_csv("data.csv", index=False)
     else:
         msg = "No new updates"
         print(msg)
