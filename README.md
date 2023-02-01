@@ -1,4 +1,6 @@
 # Free Music @ Esplanade News
+[![Esplanade News Scrapper](https://github.com/Joanna-Khek/free_music_esplanade_news/actions/workflows/action.yml/badge.svg)](https://github.com/Joanna-Khek/free_music_esplanade_news/actions/workflows/action.yml)
+
 ![free mUSIC](https://user-images.githubusercontent.com/53141849/173496469-5b5c920e-5ce0-4e1f-b38e-edcfa2b1f25f.png)
 
 ## Inspiration
