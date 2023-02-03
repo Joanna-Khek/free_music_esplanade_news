@@ -19,7 +19,6 @@ from tqdm import tqdm
 import telegram
 
 
-#import chromedriver_binary
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
