@@ -95,8 +95,8 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
 if __name__ == "__main__":
     
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
-    API_KEY = os.getenv("API_KEY")
-    CHAT_ID = os.getenv("CHAT_ID")
+    API_KEY = os.environ["API_KEY"]
+    CHAT_ID = os.environ["CHAT_ID"]
 
     # setting up options
     chrome_options = webdriver.ChromeOptions()
