@@ -27,7 +27,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 # from sqlalchemy import create_engine 
 
 
-load_dotenv()
+#load_dotenv()
 
 def pages(driver):
     load_more = driver.find_elements(By.XPATH, "//div[@x-show='showLoadMore']")[0].text
