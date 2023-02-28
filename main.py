@@ -90,7 +90,7 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
     # start telegram bot
     bot = telegram.Bot(token=API_KEY)
     bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=telegram.ParseMode.MARKDOWN,
-                     read_timeout=30, write_timeout=30)
+                     timeout =30)
     
 if __name__ == "__main__":
     
