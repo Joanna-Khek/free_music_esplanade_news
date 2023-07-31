@@ -42,14 +42,14 @@ def download_chromedriver():
 
     # Find url for win64
     for item in platform_url:
-        if item['platform'] == 'win32':
+        if item['platform'] == 'win64':
             print(item['url'])
 
             r = requests.get(item['url'])
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall()
     print("Move File")
-    shutil.move("chromedriver-win32/chromedriver.exe", "./chromedriver.exe")
+    #shutil.move("chromedriver-win64/chromedriver.exe", "./chromedriver.exe")
     print("Successfully downloaded!")
 
 
@@ -118,7 +118,7 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
     
 if __name__ == "__main__":
 
-    download_chromedriver()
+    #download_chromedriver()
     #os.chmod('./chromedriver-win64', 0o755)
     
 
@@ -136,11 +136,9 @@ if __name__ == "__main__":
     chrome_options.add_argument("--disable-dev-shm-usage")
     #chrome_options.binary_location = "/usr/bin/google-chrome"
     #service = ChromeService(executable_path=ChromeDriverManager().install())
-
-    print(os.listdir)
-    service = ChromeService(executable_path="./chromedriver.exe")
+    #service = ChromeService(executable_path="./chromedriver.exe")
     #service = ChromeService(executable_path="/usr/local/bin/chromedriver")
-    driver = webdriver.Chrome(options=chrome_options, service=service)
+    driver = webdriver.Chrome(options=chrome_options)
     # driver =  webdriver.Chrome(service=service, options=chrome_options)
 
     print("Entering website...")
