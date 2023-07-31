@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
 
     download_chromedriver()
-    os.chmod('chromedriver-win64', 0o755)
+    os.chmod('./chromedriver-win64', 0o755)
     
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.environ["API_KEY"]
