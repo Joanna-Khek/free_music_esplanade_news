@@ -23,6 +23,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
 import urllib.request, json 
+import shutil
 import requests, zipfile, io
 # SQL Database
 # import psycopg2
@@ -47,6 +48,7 @@ def download_chromedriver():
             r = requests.get(item['url'])
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall()
+    shutil.move("chromedriver-win64/chromedriver.exe", "./chromedriver.exe")
     print("Successfully downloaded!")
 
 
