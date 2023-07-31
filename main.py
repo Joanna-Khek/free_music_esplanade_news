@@ -127,7 +127,7 @@ if __name__ == "__main__":
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("--disable-dev-shm-usage")
     #service = ChromeService(executable_path=ChromeDriverManager().install())
-    service = ChromeService("chromedriver-win64/chromedriver.exe")
+    service = ChromeService("./chromedriver-win64/chromedriver.exe")
     driver =  webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get(url)
