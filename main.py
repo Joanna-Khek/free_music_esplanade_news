@@ -129,10 +129,10 @@ if __name__ == "__main__":
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.binary_location = "/usr/bin/google-chrome"
+    #chrome_options.binary_location = "/usr/bin/google-chrome"
     #service = ChromeService(executable_path=ChromeDriverManager().install())
-    #service = ChromeService("./chromedriver-win64/chromedriver.exe")
-    service = ChromeService(executable_path="/usr/local/bin/chromedriver")
+    service = ChromeService("./chromedriver-win64/chromedriver.exe")
+    #service = ChromeService(executable_path="/usr/local/bin/chromedriver")
     driver = webdriver.Chrome(options=chrome_options, service=service)
     # service = ChromeSerice("")
     # driver =  webdriver.Chrome(service=service, options=chrome_options)
