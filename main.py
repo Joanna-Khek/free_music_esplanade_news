@@ -32,6 +32,7 @@ import requests, zipfile, io
 load_dotenv()
 
 def download_chromedriver():
+    print("Download latest chromedriver...")
     
     with urllib.request.urlopen("https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json") as url:
         data = json.loads(url.read().decode())
@@ -46,6 +47,7 @@ def download_chromedriver():
             r = requests.get(item['url'])
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall()
+    print("Successfully downloaded!")
 
 
 def pages(driver):
@@ -113,6 +115,7 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
     
 if __name__ == "__main__":
 
+    os.chmod('./chromedriver-win64', 0o755)
     download_chromedriver()
     
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
