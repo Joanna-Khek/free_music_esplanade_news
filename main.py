@@ -115,8 +115,9 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
     
 if __name__ == "__main__":
 
-    os.chmod('./chromedriver-win64', 0o755)
+
     download_chromedriver()
+    os.chmod('/chromedriver-win64', 0o755)
     
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.environ["API_KEY"]
