@@ -49,7 +49,7 @@ def download_chromedriver():
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall()
     print("Move File")
-    shutil.move("chromedriver-win64/chromedriver.exe", "./chromedriver.exe")
+    shutil.move("chromedriver-win32/chromedriver.exe", "./chromedriver.exe")
     print("Successfully downloaded!")
 
 
