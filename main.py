@@ -44,7 +44,6 @@ def download_chromedriver():
     for item in platform_url:
         if item['platform'] == 'win64':
             print(item['url'])
-
             r = requests.get(item['url'])
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall()
@@ -121,7 +120,6 @@ if __name__ == "__main__":
     #download_chromedriver()
     #os.chmod('./chromedriver-win64', 0o755)
     
-
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.environ["API_KEY"]
     CHAT_ID = os.environ["CHAT_ID"]
