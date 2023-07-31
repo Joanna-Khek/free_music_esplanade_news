@@ -4,3 +4,4 @@
 output.csv
 *.log
 .DS_Store
+chromedriver-win64
