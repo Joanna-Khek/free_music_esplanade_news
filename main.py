@@ -121,10 +121,12 @@ if __name__ == "__main__":
     download_chromedriver()
     #os.chmod('./chromedriver-win64', 0o755)
     
+
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.environ["API_KEY"]
     CHAT_ID = os.environ["CHAT_ID"]
 
+    print("Launching driver...")
     # setting up options
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--headless")
@@ -134,12 +136,14 @@ if __name__ == "__main__":
     chrome_options.add_argument("--disable-dev-shm-usage")
     #chrome_options.binary_location = "/usr/bin/google-chrome"
     #service = ChromeService(executable_path=ChromeDriverManager().install())
-    service = ChromeService(executable_path="chromedriver.exe")
+
+    print(os.listdir)
+    service = ChromeService(executable_path="./chromedriver.exe")
     #service = ChromeService(executable_path="/usr/local/bin/chromedriver")
     driver = webdriver.Chrome(options=chrome_options, service=service)
-    # service = ChromeSerice("")
     # driver =  webdriver.Chrome(service=service, options=chrome_options)
 
+    print("Entering website...")
     driver.get(url)
     WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
     
