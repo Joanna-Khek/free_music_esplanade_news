@@ -42,7 +42,7 @@ def download_chromedriver():
 
     # Find url for win64
     for item in platform_url:
-        if item['platform'] == 'win64':
+        if item['platform'] == 'win32':
             print(item['url'])
 
             r = requests.get(item['url'])
