@@ -22,12 +22,31 @@ import telegram
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
+import urllib.request, json 
+import requests, zipfile, io
 # SQL Database
 # import psycopg2
 # from sqlalchemy import create_engine 
 
 
 load_dotenv()
+
+def download_chromedriver():
+    
+    with urllib.request.urlopen("https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json") as url:
+        data = json.loads(url.read().decode())
+
+    platform_url = data['channels']['Stable']['downloads']['chromedriver']
+
+    # Find url for win64
+    for item in platform_url:
+        if item['platform'] == 'win64':
+            print(item['url'])
+
+            r = requests.get(item['url'])
+            z = zipfile.ZipFile(io.BytesIO(r.content))
+            z.extractall()
+
 
 def pages(driver):
     load_more = driver.find_elements(By.XPATH, "//div[@x-show='showLoadMore']")[0].text
@@ -93,6 +112,8 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
                      timeout =30)
     
 if __name__ == "__main__":
+
+    download_chromedriver()
     
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.environ["API_KEY"]
@@ -105,7 +126,8 @@ if __name__ == "__main__":
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("--disable-dev-shm-usage")
-    service = ChromeService(executable_path=ChromeDriverManager().install())
+    #service = ChromeService(executable_path=ChromeDriverManager().install())
+    service = ChromeService("chromedriver-win64/chromedriver.exe")
     driver =  webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get(url)
@@ -155,7 +177,7 @@ if __name__ == "__main__":
                 code_html='*{}*'.format(df_update["title"].iloc[k])  
                 msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
                 time.sleep(2)
-                send_telegram_message(msg, CHAT_ID, API_KEY)
+                #send_telegram_message(msg, CHAT_ID, API_KEY)
                 print("Sent successfully!")
             
         # update to database
