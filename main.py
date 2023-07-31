@@ -48,6 +48,7 @@ def download_chromedriver():
             r = requests.get(item['url'])
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall()
+    print("Move File")
     shutil.move("chromedriver-win64/chromedriver.exe", "./chromedriver.exe")
     print("Successfully downloaded!")
 
@@ -117,7 +118,7 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
     
 if __name__ == "__main__":
 
-    #download_chromedriver()
+    download_chromedriver()
     #os.chmod('./chromedriver-win64', 0o755)
     
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
@@ -133,7 +134,7 @@ if __name__ == "__main__":
     chrome_options.add_argument("--disable-dev-shm-usage")
     #chrome_options.binary_location = "/usr/bin/google-chrome"
     #service = ChromeService(executable_path=ChromeDriverManager().install())
-    service = ChromeService("chromedriver.exe")
+    service = ChromeService(executable_path="chromedriver.exe")
     #service = ChromeService(executable_path="/usr/local/bin/chromedriver")
     driver = webdriver.Chrome(options=chrome_options, service=service)
     # service = ChromeSerice("")
