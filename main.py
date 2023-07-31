@@ -115,9 +115,8 @@ def send_telegram_message(msg, CHAT_ID, API_KEY):
     
 if __name__ == "__main__":
 
-
-    download_chromedriver()
-    os.chmod('./chromedriver-win64', 0o755)
+    #download_chromedriver()
+    #os.chmod('./chromedriver-win64', 0o755)
     
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.environ["API_KEY"]
@@ -130,9 +129,13 @@ if __name__ == "__main__":
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.binary_location = "/usr/bin/google-chrome"
     #service = ChromeService(executable_path=ChromeDriverManager().install())
-    service = ChromeService("./chromedriver-win64/chromedriver.exe")
-    driver =  webdriver.Chrome(service=service, options=chrome_options)
+    #service = ChromeService("./chromedriver-win64/chromedriver.exe")
+    service = ChromeService(executable_path="/usr/local/bin/chromedriver")
+    driver = webdriver.Chrome(options=chrome_options, service=service)
+    # service = ChromeSerice("")
+    # driver =  webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get(url)
     WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
