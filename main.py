@@ -132,7 +132,6 @@ if __name__ == "__main__":
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("--disable-dev-shm-usage")
-    #chrome_options.binary_location = "/usr/bin/google-chrome"
     #service = ChromeService(executable_path=ChromeDriverManager().install())
     #service = ChromeService(executable_path="./chromedriver.exe")
     #service = ChromeService(executable_path="/usr/local/bin/chromedriver")
@@ -187,7 +186,7 @@ if __name__ == "__main__":
                 code_html='*{}*'.format(df_update["title"].iloc[k])  
                 msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
                 time.sleep(2)
-                send_telegram_message(msg, CHAT_ID, API_KEY)
+                #send_telegram_message(msg, CHAT_ID, API_KEY)
                 print("Sent successfully!")
             
         # update to database
