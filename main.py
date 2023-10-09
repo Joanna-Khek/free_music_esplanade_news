@@ -85,6 +85,7 @@ def item_scrapper(driver, data):
         organiser_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='mb-8']/div[@class='body-2 rte']")[1].text
         date_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='flex justify-start body-2 mb-8']")[0].text
         address_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='flex justify-start body-2 mb-8']")[2].text
+        synopsis_text = driver.find_elements(By.XPATH, "//div[@class='relative']/div[@class='overflow-y-hidden']")[0].text
         link_text = driver.current_url
         
         day_text = ''
@@ -97,7 +98,8 @@ def item_scrapper(driver, data):
                     'date': date_text,
                     'day': day_text,
                     'time': time_text,
-                    'address': address_text})
+                    'address': address_text,
+                    'synopsis': synopsis_text})
     return data
         
 def check_update(old_df, new_titles, df):
