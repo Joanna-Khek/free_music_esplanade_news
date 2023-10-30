@@ -1,26 +1,16 @@
 import pandas as pd
 import time
-import csv
 import os
-import sys
 
 # Selenium Web Scraping
 from selenium import webdriver
-from selenium.webdriver.chrome import options
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
-
-
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 
 import urllib.request, json 
 import shutil
