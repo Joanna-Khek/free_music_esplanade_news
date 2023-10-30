@@ -136,9 +136,11 @@ if __name__ == "__main__":
     chrome_options.add_argument("--disable-dev-shm-usage")
     #service = ChromeService(executable_path=ChromeDriverManager().install())
     #service = ChromeService(executable_path="./chromedriver.exe")
-    #service = ChromeService(executable_path="/usr/local/bin/chromedriver")
-    driver = webdriver.Chrome(options=chrome_options)
-    # driver =  webdriver.Chrome(service=service, options=chrome_options)
+    #service = ChromeService(executable_path="chromdriver-wind64/chromedriver.exe")
+    #driver = webdriver.Chrome(options=chrome_options)
+    service = Service()
+    driver =  webdriver.Chrome(service=service,
+                               options=chrome_options)
 
     print("Entering website...")
     driver.get(url)
