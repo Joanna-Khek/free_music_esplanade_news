@@ -105,7 +105,7 @@ def check_update(old_df, new_titles, df):
 def send_telegram_message(msg, CHAT_ID, API_KEY):
     # start telegram bot
     bot = telegram.Bot(token=API_KEY)
-    bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=ParseMode.MARKDOWN,
+    await bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=ParseMode.MARKDOWN,
                      timeout =30)
     
 if __name__ == "__main__":
