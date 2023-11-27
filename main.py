@@ -102,7 +102,7 @@ def check_update(old_df, new_titles, df):
     print("Number of new new titles: {}".format(len(new_titles)))
     return new_titles
     
-def send_telegram_message(msg, CHAT_ID, API_KEY):
+async def send_telegram_message(msg, CHAT_ID, API_KEY):
     # start telegram bot
     bot = telegram.Bot(token=API_KEY)
     await bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=ParseMode.MARKDOWN,
