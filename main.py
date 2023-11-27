@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
 from telegram.constants import ParseMode
-
+import asyncio
 import urllib.request, json 
 import shutil
 import requests, zipfile, io
@@ -105,8 +105,9 @@ def check_update(old_df, new_titles, df):
 async def send_telegram_message(msg, CHAT_ID, API_KEY):
     # start telegram bot
     bot = telegram.Bot(token=API_KEY)
-    await bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=ParseMode.MARKDOWN,
-                     timeout =30)
+    async with bot:
+        await bot.send_message(chat_id=CHAT_ID, text=msg, 
+                               parse_mode=ParseMode.MARKDOWN)
     
 if __name__ == "__main__":
 
@@ -181,7 +182,7 @@ if __name__ == "__main__":
                 code_html='*{}*'.format(df_update["title"].iloc[k])  
                 msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
                 time.sleep(2)
-                send_telegram_message(msg, CHAT_ID, API_KEY)
+                asyncio.run(send_telegram_message(msg, CHAT_ID, API_KEY))
                 print("Sent successfully!")
             
         # update to database
