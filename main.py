@@ -105,9 +105,10 @@ def check_update(old_df, new_titles, df):
 async def send_telegram_message(msg, CHAT_ID, API_KEY):
     # start telegram bot
     bot = telegram.Bot(token=API_KEY)
+    print(msg)
     async with bot:
         await bot.send_message(chat_id=CHAT_ID, text=msg, 
-                               parse_mode=ParseMode.MARKDOWN_V2)
+                               parse_mode=ParseMode.MARKDOWN)
     
 if __name__ == "__main__":
 
@@ -180,7 +181,7 @@ if __name__ == "__main__":
         else:
             for k in range(len(df_update)):
                 code_html='*{}*'.format(df_update["title"].iloc[k])  
-                msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k])) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
+                msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k].replace("_", " "))) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
                 time.sleep(2)
                 asyncio.run(send_telegram_message(msg, CHAT_ID, API_KEY))
                 print("Sent successfully!")
