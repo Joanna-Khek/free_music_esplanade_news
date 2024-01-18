@@ -107,7 +107,7 @@ async def send_telegram_message(msg, CHAT_ID, API_KEY):
     bot = telegram.Bot(token=API_KEY)
     async with bot:
         await bot.send_message(chat_id=CHAT_ID, text=msg, 
-                               parse_mode=ParseMode.MARKDOWNV2)
+                               parse_mode=ParseMode.MARKDOWN_V2)
     
 if __name__ == "__main__":
 
