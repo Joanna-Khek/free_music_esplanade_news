@@ -147,19 +147,8 @@ if __name__ == "__main__":
 
 
     print("Entering website...")
-    while True:
-        try:
-            driver.get(url)
-            main_page = driver.find_elements(By.XPATH, "//div[@class='card-root h-full w-full']")
-            if len(main_page) > 0:
-                print("Loaded")
-                break
-        except:
-            print("Reloading")
-            continue
-    
-        
-    #WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
+    driver.get(url)
+    WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
     
     current_site = driver.current_url
     
