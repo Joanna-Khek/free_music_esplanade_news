@@ -148,8 +148,9 @@ if __name__ == "__main__":
 
     print("Entering website...")
     driver.get(url)
-    #WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
-    
+    wait = WebDriverWait(driver, 100)
+    element = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='card-root h-full w-full']/a/div/div[@class='absolute bottom-0 right-0 bg-black bg-transparent-80 p-2 rounded-full border border-white m-2 cursor-pointer m-2']")))
+
     current_site = driver.current_url
     
     #Load more
