@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
@@ -136,13 +137,29 @@ if __name__ == "__main__":
     #service = ChromeService(executable_path="./chromedriver.exe")
     #service = ChromeService(executable_path="chromdriver-wind64/chromedriver.exe")
     #driver = webdriver.Chrome(options=chrome_options)
+    
     service = Service()
     driver =  webdriver.Chrome(service=service,
                                options=chrome_options)
+    
+    options = Options()
+    options.page_load_strategy = 'none'
+
 
     print("Entering website...")
-    driver.get(url)
-    WebDriverWait(driver, 300).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
+    while True:
+        try:
+            driver.get(url)
+            main_page = driver.find_elements(By.XPATH, "//div[@class='card-root h-full w-full']")
+            if len(main_page) > 0:
+                print("Loaded")
+                break
+        except:
+            print("Reloading")
+            continue
+    
+        
+    #WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
     
     current_site = driver.current_url
     
