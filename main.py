@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
     print("Entering website...")
     driver.get(url)
-    WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
+    WebDriverWait(driver, 300).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='card-root h-full w-full']")))
     
     current_site = driver.current_url
     
