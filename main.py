@@ -70,27 +70,32 @@ def item_scrapper(driver, data):
         link_url = item_links[i]
         driver.get(link_url)
         time.sleep(2)
-        #WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='mb-8']")))
-        category_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='body-2  !font-semibold']")[0].text
-        title_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='mb-8']/h1")[0].text
-        organiser_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='mb-8']/div[@class='body-2 rte']")[1].text
-        date_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='flex justify-start body-2 mb-8']")[0].text
-        address_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='flex justify-start body-2 mb-8']")[2].text
-        synopsis_text = driver.find_elements(By.XPATH, "//div[@class='relative']/div[@class='overflow-y-hidden']")[0].text
-        link_text = driver.current_url
-        
-        day_text = ''
-        time_text = ''
-        
-        data.append({'category': category_text,
-                    'title': title_text,
-                    'link': link_text,
-                    'organiser': organiser_text,
-                    'date': date_text,
-                    'day': day_text,
-                    'time': time_text,
-                    'address': address_text,
-                    'synopsis': synopsis_text})
+        try:
+            #WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='mb-8']")))
+            category_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='body-2  !font-semibold']")[0].text
+            title_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='mb-8']/h1")[0].text
+            organiser_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='mb-8']/div[@class='body-2 rte']")[1].text
+            date_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='flex justify-start body-2 mb-8']")[0].text
+            address_text = driver.find_elements(By.XPATH, "//div[@class='col-span-5']/div[@class='flex justify-start body-2 mb-8']")[2].text
+            synopsis_text = driver.find_elements(By.XPATH, "//div[@class='relative']/div[@class='overflow-y-hidden']")[0].text
+            link_text = driver.current_url
+            
+            day_text = ''
+            time_text = ''
+            
+            data.append({'category': category_text,
+                        'title': title_text,
+                        'link': link_text,
+                        'organiser': organiser_text,
+                        'date': date_text,
+                        'day': day_text,
+                        'time': time_text,
+                        'address': address_text,
+                        'synopsis': synopsis_text})
+            print("Success!")
+        except Exception:
+            print("Unable to scrape due to website error")
+            continue
     return data
         
 def check_update(old_df, new_titles, df):
