@@ -194,6 +194,8 @@ if __name__ == "__main__":
             for k in range(len(df_update)):
                 code_html='*{}*'.format(df_update["title"].iloc[k])  
                 msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k].replace("_", " "))) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
+                # Remove problematic strings
+                msg = msg.replace("_", " ").replace("@", " ").replace("&", " ")
                 time.sleep(2)
                 asyncio.run(send_telegram_message(msg, CHAT_ID, API_KEY))
                 print("Sent successfully!")
