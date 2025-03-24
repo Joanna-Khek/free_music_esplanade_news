@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.options import Options
 from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
+from telegram.utils.request import Request
 from telegram.constants import ParseMode
 import asyncio
 import urllib.request, json 
@@ -123,10 +124,10 @@ async def send_telegram_message(bot, msg, CHAT_ID):
         except Exception as e:
             print(f"Failed to send message: {e}")
 
-async def send_notifications(messages, client, CHAT_ID, API_KEY):
+async def send_notifications(messages, request, CHAT_ID, API_KEY):
     """Send multiple messages using a single bot instance."""
     # Set up telegram bot
-    bot = telegram.Bot(token=API_KEY, request_kwargs={'client': client})
+    bot = telegram.Bot(token=API_KEY, request=request)
 
     async with bot:
         tasks = [send_telegram_message(bot, msg, CHAT_ID) for msg in messages]
@@ -145,7 +146,8 @@ if __name__ == "__main__":
     client = httpx.AsyncClient(
         limits=httpx.Limits(max_connections=20)  # Increase max connections
     )
-
+    # Create a custom request object using the httpx client
+    request = Request(client)
 
     print("Launching driver...")
     # setting up options
@@ -223,7 +225,7 @@ if __name__ == "__main__":
                 messages.append(msg)
                 
             if messages:
-                asyncio.run(send_notifications(messages, client, CHAT_ID, API_KEY))
+                asyncio.run(send_notifications(messages, request, CHAT_ID, API_KEY))
                 print("Sent successfully!")
                 
             
