@@ -12,7 +12,6 @@ from selenium.webdriver.chrome.options import Options
 from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
-from telegram.ext import Application
 from telegram.constants import ParseMode
 import asyncio
 import urllib.request, json 
@@ -21,10 +20,9 @@ import requests, zipfile, io
 # SQL Database
 # import psycopg2
 # from sqlalchemy import create_engine 
-import httpx
+
 
 load_dotenv()
-
 
 def download_chromedriver():
     print("Download latest chromedriver...")
@@ -111,25 +109,21 @@ def check_update(old_df, new_titles, df):
     return new_titles
     
 async def send_telegram_message(bot, msg, CHAT_ID):
-    SEMAPHORE = asyncio.Semaphore(3)
     print(msg)
-    async with SEMAPHORE:
-        try:
-            await bot.send_message(chat_id=CHAT_ID, text=msg, 
-                                parse_mode=ParseMode.MARKDOWN)
-        except telegram.error.TimedOut:
-            print("Timeout error")
-            await asyncio.sleep(5)  # Wait and retry once
-            await bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=ParseMode.MARKDOWN)
-        except Exception as e:
-            print(f"Failed to send message: {e}")
+    try:
+        await bot.send_message(chat_id=CHAT_ID, text=msg, 
+                               parse_mode=ParseMode.MARKDOWN)
+    except telegram.error.TimedOut:
+        print("Timeout error")
+        await asyncio.sleep(5)  # Wait and retry once
+        await bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=ParseMode.MARKDOWN)
+    except Exception as e:
+        print(f"Failed to send message: {e}")
 
-async def send_notifications(messages, CHAT_ID):
+async def send_notifications(messages, CHAT_ID, API_KEY):
     """Send multiple messages using a single bot instance."""
-    # Set up telegram bot
-    #bot = telegram.Bot(token=API_KEY, request=request)
-    bot = application.bot
-
+    bot = telegram.Bot(token=API_KEY, request=telegram.request.HTTPXRequest(read_timeout=10, write_timeout=10, pool_timeout=20))
+    
     async with bot:
         tasks = [send_telegram_message(bot, msg, CHAT_ID) for msg in messages]
         await asyncio.gather(*tasks)
@@ -142,14 +136,6 @@ if __name__ == "__main__":
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.environ["API_KEY"]
     CHAT_ID = os.environ["CHAT_ID"]
-
-    # Create an httpx client with connection pool and timeout settings
-    client = httpx.AsyncClient(
-        limits=httpx.Limits(max_connections=20),  # Increase the max connections
-        timeout=httpx.Timeout(10.0)  # Set a timeout of 10 seconds
-    )
-    # Create a custom request object using the httpx client
-    application = Application.builder().token(API_KEY).read_timeout(5).write_timeout(5).build()
 
     print("Launching driver...")
     # setting up options
@@ -203,7 +189,6 @@ if __name__ == "__main__":
     update = check_update(old_df, new_titles, df)
     
     print("Sending telegram notification...")
-    
     if len(update) != 0:
         
         # Get those new titles information
