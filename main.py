@@ -20,9 +20,10 @@ import requests, zipfile, io
 # SQL Database
 # import psycopg2
 # from sqlalchemy import create_engine 
-
+import httpx
 
 load_dotenv()
+
 
 def download_chromedriver():
     print("Download latest chromedriver...")
@@ -122,9 +123,11 @@ async def send_telegram_message(bot, msg, CHAT_ID):
         except Exception as e:
             print(f"Failed to send message: {e}")
 
-async def send_notifications(messages, CHAT_ID, API_KEY):
+async def send_notifications(messages, client, CHAT_ID, API_KEY):
     """Send multiple messages using a single bot instance."""
-    bot = telegram.Bot(token=API_KEY)
+    # Set up telegram bot
+    bot = telegram.Bot(token=API_KEY, request_kwargs={'client': client})
+
     async with bot:
         tasks = [send_telegram_message(bot, msg, CHAT_ID) for msg in messages]
         await asyncio.gather(*tasks)
@@ -137,6 +140,12 @@ if __name__ == "__main__":
     url = "https://www.esplanade.com/whats-on?performanceNature=Free+Programme"
     API_KEY = os.environ["API_KEY"]
     CHAT_ID = os.environ["CHAT_ID"]
+
+    # Set up the HTTP client with increased pool size
+    client = httpx.AsyncClient(
+        limits=httpx.Limits(max_connections=20)  # Increase max connections
+    )
+
 
     print("Launching driver...")
     # setting up options
@@ -214,7 +223,7 @@ if __name__ == "__main__":
                 messages.append(msg)
                 
             if messages:
-                asyncio.run(send_notifications(messages, CHAT_ID, API_KEY))
+                asyncio.run(send_notifications(messages, client, CHAT_ID, API_KEY))
                 print("Sent successfully!")
                 
             
