@@ -108,17 +108,24 @@ def check_update(old_df, new_titles, df):
     print("Number of new new titles: {}".format(len(new_titles)))
     return new_titles
     
-async def send_telegram_message(msg, CHAT_ID, API_KEY):
-    # start telegram bot
-    bot = telegram.Bot(token=API_KEY)
+async def send_telegram_message(bot, msg, CHAT_ID):
     print(msg)
-    async with bot:
+    try:
         await bot.send_message(chat_id=CHAT_ID, text=msg, 
                                parse_mode=ParseMode.MARKDOWN)
+    except telegram.error.TimedOut:
+        print("Timeout error")
+        await asyncio.sleep(5)  # Wait and retry once
+        await bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=ParseMode.MARKDOWN)
+    except Exception as e:
+        print(f"Failed to send message: {e}")
 
 async def send_notifications(messages, CHAT_ID, API_KEY):
-    tasks = [send_telegram_message(msg, CHAT_ID, API_KEY) for msg in messages]
-    await asyncio.gather(*tasks)
+    """Send multiple messages using a single bot instance."""
+    bot = telegram.Bot(token=API_KEY)
+    async with bot:
+        tasks = [send_telegram_message(bot, msg, CHAT_ID) for msg in messages]
+        await asyncio.gather(*tasks)
     
 if __name__ == "__main__":
 
