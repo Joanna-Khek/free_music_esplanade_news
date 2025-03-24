@@ -113,9 +113,8 @@ async def send_telegram_message(msg, CHAT_ID, API_KEY):
     bot = telegram.Bot(token=API_KEY)
     print(msg)
     async with bot:
-        # await bot.send_message(chat_id=CHAT_ID, text=msg, 
-        #                        parse_mode=ParseMode.MARKDOWN)
-        await print(msg)
+        await bot.send_message(chat_id=CHAT_ID, text=msg, 
+                               parse_mode=ParseMode.MARKDOWN)
 
 async def send_notifications(messages, CHAT_ID, API_KEY):
     tasks = [send_telegram_message(msg, CHAT_ID, API_KEY) for msg in messages]
@@ -203,7 +202,6 @@ if __name__ == "__main__":
                 # Remove problematic strings
                 msg = msg.replace("_", " ").replace("@", " ").replace("&", " ")
                 messages.append(msg)
-                print(messages)
                 
             if messages:
                 asyncio.run(send_notifications(messages, CHAT_ID, API_KEY))
