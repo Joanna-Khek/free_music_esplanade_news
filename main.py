@@ -109,16 +109,18 @@ def check_update(old_df, new_titles, df):
     return new_titles
     
 async def send_telegram_message(bot, msg, CHAT_ID):
+    SEMAPHORE = asyncio.Semaphore(3)
     print(msg)
-    try:
-        await bot.send_message(chat_id=CHAT_ID, text=msg, 
-                               parse_mode=ParseMode.MARKDOWN)
-    except telegram.error.TimedOut:
-        print("Timeout error")
-        await asyncio.sleep(5)  # Wait and retry once
-        await bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=ParseMode.MARKDOWN)
-    except Exception as e:
-        print(f"Failed to send message: {e}")
+    async with SEMAPHORE:
+        try:
+            await bot.send_message(chat_id=CHAT_ID, text=msg, 
+                                parse_mode=ParseMode.MARKDOWN)
+        except telegram.error.TimedOut:
+            print("Timeout error")
+            await asyncio.sleep(5)  # Wait and retry once
+            await bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode=ParseMode.MARKDOWN)
+        except Exception as e:
+            print(f"Failed to send message: {e}")
 
 async def send_notifications(messages, CHAT_ID, API_KEY):
     """Send multiple messages using a single bot instance."""
@@ -188,6 +190,7 @@ if __name__ == "__main__":
     update = check_update(old_df, new_titles, df)
     
     print("Sending telegram notification...")
+    
     if len(update) != 0:
         
         # Get those new titles information
