@@ -115,6 +115,10 @@ async def send_telegram_message(msg, CHAT_ID, API_KEY):
     async with bot:
         await bot.send_message(chat_id=CHAT_ID, text=msg, 
                                parse_mode=ParseMode.MARKDOWN)
+
+async def send_notifications(messages, CHAT_ID, API_KEY):
+    tasks = [send_telegram_message(msg, CHAT_ID, API_KEY) for msg in messages]
+    await asyncio.gather(*tasks)
     
 if __name__ == "__main__":
 
@@ -191,14 +195,18 @@ if __name__ == "__main__":
 
         # found new music titles
         else:
+            messages = []
             for k in range(len(df_update)):
                 code_html='*{}*'.format(df_update["title"].iloc[k])  
                 msg = code_html + "\n\n *Category:* " + str((df_update["category"].iloc[k])) + "\n *Title:* " + str((df_update["title"].iloc[k])) + "\n *Organiser:* " + str((df_update["organiser"].iloc[k].replace("_", " "))) + "\n *Date:* " + str((df_update["date"].iloc[k])) + "\n *Address:* " + str((df_update["address"].iloc[k])) + "\n *Link:* " + str((df_update["link"].iloc[k]))
                 # Remove problematic strings
                 msg = msg.replace("_", " ").replace("@", " ").replace("&", " ")
-                time.sleep(2)
-                asyncio.run(send_telegram_message(msg, CHAT_ID, API_KEY))
+                messages.append(msg)
+                
+            if messages:
+                asyncio.run(send_notifications(msg, CHAT_ID, API_KEY))
                 print("Sent successfully!")
+                
             
         # update to database
         print("Saving database...")
