@@ -149,7 +149,7 @@ if __name__ == "__main__":
         timeout=httpx.Timeout(10.0)  # Set a timeout of 10 seconds
     )
     # Create a custom request object using the httpx client
-    application = Application.builder().token(API_KEY).client(client).build()
+    application = Application.builder().token(API_KEY).read_timeout(5).write_timeout(5).build()
 
     print("Launching driver...")
     # setting up options
