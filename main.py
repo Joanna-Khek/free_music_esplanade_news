@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.options import Options
 from dotenv import load_dotenv
 from tqdm import tqdm
 import telegram
-from telegram.utils.request import Request
+from telegram.ext import Application
 from telegram.constants import ParseMode
 import asyncio
 import urllib.request, json 
@@ -124,10 +124,11 @@ async def send_telegram_message(bot, msg, CHAT_ID):
         except Exception as e:
             print(f"Failed to send message: {e}")
 
-async def send_notifications(messages, request, CHAT_ID, API_KEY):
+async def send_notifications(messages, CHAT_ID):
     """Send multiple messages using a single bot instance."""
     # Set up telegram bot
-    bot = telegram.Bot(token=API_KEY, request=request)
+    #bot = telegram.Bot(token=API_KEY, request=request)
+    bot = application.bot
 
     async with bot:
         tasks = [send_telegram_message(bot, msg, CHAT_ID) for msg in messages]
@@ -142,12 +143,13 @@ if __name__ == "__main__":
     API_KEY = os.environ["API_KEY"]
     CHAT_ID = os.environ["CHAT_ID"]
 
-    # Set up the HTTP client with increased pool size
+    # Create an httpx client with connection pool and timeout settings
     client = httpx.AsyncClient(
-        limits=httpx.Limits(max_connections=20)  # Increase max connections
+        limits=httpx.Limits(max_connections=20),  # Increase the max connections
+        timeout=httpx.Timeout(10.0)  # Set a timeout of 10 seconds
     )
     # Create a custom request object using the httpx client
-    request = Request(client)
+    application = Application.builder().token(API_KEY).client(client).build()
 
     print("Launching driver...")
     # setting up options
@@ -225,7 +227,7 @@ if __name__ == "__main__":
                 messages.append(msg)
                 
             if messages:
-                asyncio.run(send_notifications(messages, request, CHAT_ID, API_KEY))
+                asyncio.run(send_notifications(messages, CHAT_ID, API_KEY))
                 print("Sent successfully!")
                 
             
